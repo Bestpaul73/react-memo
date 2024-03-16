@@ -23,6 +23,13 @@ export function SelectLevelPage() {
             </Link>
           </li>
         </ul>
+        {/* <h2 className={styles.subtitle}>Включить счетчик попыток</h2> */}
+        <div>
+          <input type="checkbox" id="attempts" name="attempts" />
+          <label for="attempts" className={styles.subtitle}>
+            включить счетчик попыток
+          </label>
+        </div>
       </div>
     </div>
   );

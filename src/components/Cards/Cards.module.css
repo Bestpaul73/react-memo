@@ -28,13 +28,13 @@
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: end;
+  align-items: flex-end;
   margin-bottom: 35px;
 }
 
 .timer {
   display: flex;
-  align-items: end;
+  align-items: flex-end;
 
   color: #fff;
   font-family: StratosSkyeng;

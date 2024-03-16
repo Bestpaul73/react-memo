@@ -22,7 +22,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "format": "prettier --write .",
-    "lint": "eslint ./src/**/**.jsx ./src/**/**.js"
+    "lint": "eslint --fix ./src/**/**.jsx ./src/**/**.js"
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
