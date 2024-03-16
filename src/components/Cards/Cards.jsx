@@ -51,6 +51,10 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // Дата конца игры
   const [gameEndDate, setGameEndDate] = useState(null);
 
+  //Счетчик ошибок
+  const [leftAttempts, setLeftAttempts] = useState(3);
+  const attemptsFlag = localStorage.getItem("attemptsFlag");
+
   // Стейт для таймера, высчитывается в setInteval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
     seconds: 0,
@@ -61,6 +65,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(new Date());
     setStatus(status);
   }
+
   function startGame() {
     const startDate = new Date();
     setGameEndDate(null);
@@ -68,11 +73,13 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setTimer(getTimerValue(startDate, null));
     setStatus(STATUS_IN_PROGRESS);
   }
+
   function resetGame() {
     setGameStartDate(null);
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
+    setLeftAttempts(3);
   }
 
   /**
@@ -127,7 +134,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
 
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
     if (playerLost) {
-      finishGame(STATUS_LOST);
+      setLeftAttempts(leftAttempts - 1);
+      if (leftAttempts <= 1) finishGame(STATUS_LOST);
       return;
     }
 
@@ -209,6 +217,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
           />
         ))}
       </div>
+
+      {attemptsFlag ? <div className={styles.leftAttempts}>Осталось {leftAttempts} попытки</div> : ""}
 
       {isGameEnded ? (
         <div className={styles.modalContainer}>
