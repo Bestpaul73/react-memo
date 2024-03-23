@@ -44,7 +44,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
       time: fullGameTime,
     })
       .then(newLeaders => {
-        console.log(newLeaders);
+        // console.log(newLeaders);
       })
       .catch(() => alert("Ошибка добавления пользователя"));
   };
