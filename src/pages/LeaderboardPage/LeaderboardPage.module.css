@@ -1,0 +1,147 @@
+.main{
+  margin: 52px 40px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  color: #FFF;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px;
+  font-family: StratosSkyeng;
+}
+
+.link {
+  width: 246px;
+  height: 50px;
+  border-radius: 12px;
+  background: #7ac100;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.link:hover {
+  background: #7ac100cc;
+}
+
+.link_text{
+  color: #FFF;
+  text-align: center;
+  font-family: StratosSkyeng;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 32px;
+  margin-top: 8px;
+}
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.leaderboardTitle{
+  box-sizing: border-box;
+  color: #999999;
+  font-family: StratosSkyeng;
+  font-size: 24px;
+  line-height: 32px;
+  display: flex;
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  gap: 150px;
+}
+
+.leaderPosition{
+  width: 190px;
+}
+
+.leaderBlock{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.leaderBlock_name {
+  width: 250px;
+}
+
+.leaderBlock_achievements {
+  display: flex;
+  gap: 6px;
+  margin-left: -210px;
+}
+
+.leaderBlock_img {
+  width: 32px;
+  height: 32px;
+  position: relative;
+}
+
+.leaderBlock_superpowers:hover>.bubble_superpowers,
+.leaderBlock_pazl:hover>.bubble_pazl {
+  display: block;
+}
+
+.bubble_superpowers,
+.bubble_pazl{
+  display: none;
+}
+
+.leaderBlock_superpowers,
+.leaderBlock_pazl {
+  position: relative;
+}
+
+.leaderBlock_hoverPazl,
+.leaderBlock_hoverSuperpowers{
+  position: absolute;
+  top: -90px;
+}
+
+.leaderBlock_pazl_text,
+.leaderBlock_superpowers_text {
+  color: #004980;
+  text-align: center;
+  font-variant-numeric: lining-nums proportional-nums;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 133.333% */
+  position: absolute;
+  top: -90px;
+  width: 174px;
+  height: 87px;
+  padding: 15px 20px 24px 20px;
+}
+
+.leaderBlock_superpowers_text {
+  width: 134px;
+  height: 48px;
+}
+
+.leaders{
+  box-sizing: border-box;
+  color: #000;
+  font-family: StratosSkyeng;
+  font-size: 24px;
+  display: flex;
+  background: #fff;
+  padding: 16px 20px;
+  border-radius: 12px;
+  gap: 150px;
+}
+.loader {
+  font-size: 24px;
+  color: #fff;
+  font-family: StratosSkyeng;
+}
