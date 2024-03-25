@@ -89,3 +89,18 @@
 .link:hover {
   color: #004980;
 }
+
+.form {
+  width: 276px;
+  text-align: center;
+}
+
+.submit {
+  width: 180px;
+
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 4px;
+  /* border: 2px; */
+  margin-bottom: 24px;
+}
