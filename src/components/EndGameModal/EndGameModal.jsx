@@ -20,7 +20,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (level === 3 && isWon) {
+    if (level === 1 && isWon) {
       getLeaders()
         .then(({ leaders }) => {
           console.log(leaders);
@@ -39,6 +39,12 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
 
   const submitLeader = e => {
     e.preventDefault();
+
+    if (leader.trim() === "") {
+      alert("Введите непустое имя");
+      return;
+    }
+
     addLeader({
       name: leader,
       time: fullGameTime,
