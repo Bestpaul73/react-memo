@@ -20,7 +20,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (level === 1 && isWon) {
+    if (level === 3 && isWon) {
       getLeaders()
         .then(({ leaders }) => {
           console.log(leaders);
