@@ -3,7 +3,7 @@ import { Button } from "../Button/Button";
 import deadImageUrl from "./images/dead.png";
 import celebrationImageUrl from "./images/celebration.png";
 import { useSelector } from "react-redux";
-import { addLeader, getLeaders } from "../../api";
+import { addLeader } from "../../api";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -21,19 +21,21 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
 
   useEffect(() => {
     if (level === 3 && isWon) {
-      getLeaders()
-        .then(({ leaders }) => {
-          console.log(leaders);
-          leaders = leaders.sort((a, b) => {
-            return a.time - b.time;
-          });
-          if (leaders[leaders.length - 1].time > fullGameTime || leaders.length < 10) {
-            setPlayerLeader(true);
-          }
-        })
-        .catch(() => {
-          alert("Не получилось получить список лидеров");
-        });
+      setPlayerLeader(true);
+
+      // getLeaders()
+      //   .then(({ leaders }) => {
+      //     console.log(leaders);
+      //     leaders = leaders.sort((a, b) => {
+      //       return a.time - b.time;
+      //     });
+      //     if (leaders[leaders.length - 1].time > fullGameTime || leaders.length < 10) {
+      //       setPlayerLeader(true);
+      //     }
+      //   })
+      //   .catch(() => {
+      //     alert("Не получилось получить список лидеров");
+      //   });
     }
   }, [fullGameTime, isWon, level]);
 
