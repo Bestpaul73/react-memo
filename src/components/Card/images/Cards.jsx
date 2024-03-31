@@ -6,8 +6,8 @@ import { EndGameModal } from "../../components/EndGameModal/EndGameModal";
 import { Button } from "../../components/Button/Button";
 import { Card } from "../../components/Card/Card";
 import { useSelector } from "react-redux";
-import eye from "./images/eye.svg";
-import pair from "./images/pair.svg";
+import eye from "./images/a.svg";
+import pair from "./images/b.svg";
 
 // Игра закончилась
 const STATUS_LOST = "STATUS_LOST";
@@ -18,8 +18,7 @@ const STATUS_IN_PROGRESS = "STATUS_IN_PROGRESS";
 const STATUS_PREVIEW = "STATUS_PREVIEW";
 // Пауза во время суперсилы
 const STATUS_PAUSE = "STATUS_PAUSE";
-
-let pauseTimerOn = false;
+let pauseTimer;
 
 function getTimerValue(startDate, endDate) {
   if (!startDate && !endDate) {
@@ -33,9 +32,19 @@ function getTimerValue(startDate, endDate) {
     endDate = new Date();
   }
 
-  const diffInSeconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000) - pauseTimerOn * 5;
-  const minutes = Math.floor(diffInSeconds / 60);
-  const seconds = diffInSeconds % 60;
+  if (pauseTimer === 1) {
+    const diffInSecconds = Math.floor((endDate.getTime() - 5000 - startDate.getTime()) / 1000);
+    const minutes = Math.floor(diffInSecconds / 60);
+    const seconds = diffInSecconds % 60;
+    return {
+      minutes,
+      seconds,
+    };
+  }
+
+  const diffInSecconds = Math.floor((endDate.getTime() - startDate.getTime()) / 1000);
+  const minutes = Math.floor(diffInSecconds / 60);
+  const seconds = diffInSecconds % 60;
   return {
     minutes,
     seconds,
@@ -58,13 +67,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   // Дата конца игры
   const [gameEndDate, setGameEndDate] = useState(null);
 
-  //Массив открытых непарных карт
-  const [openCardsWithoutPair, setOpenCardsWithoutPair] = useState([]);
-
   //Счетчик ошибок
-  const [leftAttempts, setLeftAttempts] = useState(3);
-  //Режим сложности из стора
-  const { difficultyMode } = useSelector(state => state.game);
+  const [lossCounter, setLossCounter] = useState(3);
 
   // Стейт для таймера, высчитывается в setInteval на основе gameStartDate и gameEndDate
   const [timer, setTimer] = useState({
@@ -73,44 +77,43 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
   });
 
   //Стейт для прозрения
-  const [epiphanyUsed, setEpiphanyUsed] = useState(false);
+  const [epiphany, setEpiphany] = useState(0);
   //Стейт для алохоморы
-  const [alohomoraUsed, setAlohomoraUsed] = useState(false);
+  const [alohomora, setAlohomora] = useState(0);
   //Стейт ачивок
   const [achievements, setAchievements] = useState([1, 2]);
+  useEffect(() => {
+    console.log(achievements);
+  }, [achievements]);
 
-  // useEffect(() => {
-  //   console.log(achievements);
-  // }, [achievements]);
+  const { gameRegime } = useSelector(state => state.game);
+  console.log(gameRegime);
 
   //Убирает ачивку при легком режиме
   useEffect(() => {
-    if (difficultyMode) {
+    if (gameRegime) {
       setAchievements([2]);
     }
-  }, [difficultyMode]);
+  }, []);
 
   function finishGame(status = STATUS_LOST) {
     setGameEndDate(new Date());
     setStatus(status);
   }
-
   function startGame() {
-    pauseTimerOn = false;
-
+    pauseTimer = 0;
     const startDate = new Date();
     setGameEndDate(null);
     setGameStartDate(startDate);
     setTimer(getTimerValue(startDate, null));
     setStatus(STATUS_IN_PROGRESS);
+    setLossCounter(3);
   }
-
   function resetGame() {
-    pauseTimerOn = false;
-
-    setEpiphanyUsed(false);
-    setAlohomoraUsed(false);
-    if (difficultyMode) {
+    pauseTimer = 0;
+    setEpiphany(0);
+    setAlohomora(0);
+    if (gameRegime) {
       setAchievements([2]);
     } else {
       setAchievements([1, 2]);
@@ -119,17 +122,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     setGameEndDate(null);
     setTimer(getTimerValue(null, null));
     setStatus(STATUS_PREVIEW);
-    setLeftAttempts(3);
   }
-
-  const checkAllCardsOpen = cards => {
-    const isPlayerWon = cards.every(card => card.open);
-    // Победа - все карты на поле открыты
-    if (isPlayerWon) {
-      finishGame(STATUS_WON);
-      return;
-    }
-  };
 
   /**
    * Обработка основного действия в игре - открытие карты.
@@ -139,16 +132,12 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
    * - "Игра продолжается", если не случилось первых двух условий
    */
   const openCard = clickedCard => {
-    if (openCardsWithoutPair.length >= 2) {
-      return;
-    }
-
-    // Если карта уже открыта, то ничего не делаем.
+    // Если карта уже открыта, то ничего не делаем
     if (clickedCard.open) {
       return;
     }
     // Игровое поле после открытия кликнутой карты
-    let nextCards = cards.map(card => {
+    const nextCards = cards.map(card => {
       if (card.id !== clickedCard.id) {
         return card;
       }
@@ -158,42 +147,47 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         open: true,
       };
     });
-
     setCards(nextCards);
-    checkAllCardsOpen(nextCards);
+
+    const isPlayerWon = nextCards.every(card => card.open);
+
+    // Победа - все карты на поле открыты
+    if (isPlayerWon) {
+      finishGame(STATUS_WON);
+      return;
+    }
 
     // Открытые карты на игровом поле
     const openCards = nextCards.filter(card => card.open);
-
     // Ищем открытые карты, у которых нет пары среди других открытых
-    const openCardsWithoutPairTemp = openCards.filter(card => {
+    const openCardsWithoutPair = openCards.filter(card => {
       const sameCards = openCards.filter(openCard => card.suit === openCard.suit && card.rank === openCard.rank);
-
+      // console.log(sameCards);
       if (sameCards.length < 2) {
         return true;
       }
-
       return false;
     });
-    setOpenCardsWithoutPair(openCardsWithoutPairTemp);
 
-    const playerLost = openCardsWithoutPairTemp.length >= 2;
-
+    const playerLost = openCardsWithoutPair.length >= 2;
     // "Игрок проиграл", т.к на поле есть две открытые карты без пары
-    if (playerLost) {
-      console.log(leftAttempts);
-      setLeftAttempts(leftAttempts - 1);
-      if (leftAttempts <= 1 || !difficultyMode) {
-        finishGame(STATUS_LOST);
-        setOpenCardsWithoutPair([]);
-      } else {
-        setTimeout(() => {
-          setCards(cards.map(card => (openCardsWithoutPairTemp.includes(card) ? { ...card, open: false } : card)));
-          setOpenCardsWithoutPair([]);
-        }, 1000);
+    if (gameRegime) {
+      if (playerLost) {
+        setLossCounter(lossCounter - 1);
+        // console.log(lossCounter);
+        // return;
       }
-
-      return;
+      if (lossCounter === 1) {
+        finishGame(STATUS_LOST);
+        // console.log(lossCounter, 1);
+        return;
+      }
+    } else {
+      if (playerLost) {
+        finishGame(STATUS_LOST);
+        // console.log(lossCounter);
+        return;
+      }
     }
 
     // ... игра продолжается
@@ -232,24 +226,23 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
     if (status !== STATUS_PAUSE) {
       const intervalId = setInterval(() => {
         setTimer(getTimerValue(gameStartDate, gameEndDate));
-      }, 100);
+      }, 300);
       return () => {
         clearInterval(intervalId);
       };
     }
   }, [gameStartDate, gameEndDate, status]);
 
-  const openAllCards = () => {
-    if (epiphanyUsed) {
+  function openAllCards() {
+    if (epiphany === 1) {
       return;
     }
-    pauseTimerOn = true;
-
+    pauseTimer = 1;
     setAchievements(achievements.filter(achievement => achievement !== 2));
     setStatus(STATUS_PAUSE);
-    setEpiphanyUsed(true);
+    setEpiphany(1);
     const closedCards = cards.filter(card => !card.open);
-    // console.log(closedCards);
+    console.log(closedCards);
     setTimeout(() => {
       setCards(
         cards.map(card => {
@@ -262,33 +255,33 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
       );
       setStatus(STATUS_IN_PROGRESS);
     }, 5000);
-  };
+  }
 
-  const openRandomPair = () => {
-    if (alohomoraUsed) {
+  function openRandomPair() {
+    if (alohomora === 2) {
       return;
     }
     if (status === STATUS_PAUSE) {
       return;
     }
     setAchievements(achievements.filter(achievement => achievement !== 2));
-    setAlohomoraUsed(true);
+    setAlohomora(2);
     const closedCards = cards.filter(card => !card.open);
     const randomCard = closedCards[Math.floor(Math.random() * closedCards.length)];
     const pairsCard = closedCards.filter(
       closedCard =>
         closedCard.suit === randomCard.suit && closedCard.rank === randomCard.rank && randomCard.id !== closedCard.id,
     );
-    let nextCards = cards.map(card => {
-      if (card === randomCard || card === pairsCard[0]) {
-        return { ...card, open: true };
-      } else {
-        return card;
-      }
-    });
-    setCards(nextCards);
-    checkAllCardsOpen(nextCards);
-  };
+    setCards(
+      cards.map(card => {
+        if (card === randomCard || card === pairsCard[0]) {
+          return { ...card, open: true };
+        } else {
+          return card;
+        }
+      }),
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -313,7 +306,6 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </>
           )}
         </div>
-
         {status === STATUS_PREVIEW ? null : (
           <div className={styles.epiphany_buttons}>
             <button
@@ -322,10 +314,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 openAllCards();
               }}
             >
+              {epiphany === 1 ? <div className={styles.epiphany_button_used}></div> : null}
               <img src={eye} alt="" className={styles.epiphany_button_img} />
-              {epiphanyUsed ? (
-                <div className={styles.epiphany_button_used}></div>
-              ) : (
+              {epiphany === 1 ? null : (
                 <div className={styles.epiphany_button_clue}>
                   <img src={eye} alt="" className={styles.epiphany_button_clue_img} />
                   <div>
@@ -344,10 +335,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
                 openRandomPair();
               }}
             >
+              {alohomora === 2 ? <div className={styles.alohomora_button_used}></div> : null}
               <img src={pair} alt="" className={styles.alohomora_button_img} />
-              {alohomoraUsed ? (
-                <div className={styles.alohomora_button_used}></div>
-              ) : (
+              {alohomora === 2 ? null : (
                 <div className={styles.alohomora_button_clue}>
                   <div className={styles.alohomora_button_clue_b}>
                     <img src={pair} alt="" className={styles.alohomora_button_clue_img} />
@@ -361,10 +351,9 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             </button>
           </div>
         )}
-
-        {(status === STATUS_IN_PROGRESS || status === STATUS_PAUSE) && (
+        {status === STATUS_IN_PROGRESS || status === STATUS_PAUSE ? (
           <Button onClick={resetGame}>Начать заново</Button>
-        )}
+        ) : null}
       </div>
 
       <div className={styles.cards}>
@@ -379,7 +368,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         ))}
       </div>
 
-      {difficultyMode ? <div className={styles.leftAttempts}>Осталось {leftAttempts} попытки</div> : ""}
+      {gameRegime === true ? <div className={styles.lossCounter}>Осталось {lossCounter} попытки</div> : ""}
 
       {isGameEnded ? (
         <div className={styles.modalContainer}>
@@ -387,8 +376,8 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
             isWon={status === STATUS_WON}
             gameDurationSeconds={timer.seconds}
             gameDurationMinutes={timer.minutes}
-            onClick={resetGame}
             achievements={achievements}
+            onClick={resetGame}
           />
         </div>
       ) : null}

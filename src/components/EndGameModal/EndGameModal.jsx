@@ -7,7 +7,7 @@ import { addLeader } from "../../api";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick }) {
+export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, onClick, achievements }) {
   const [leader, setLeader] = useState("Player");
   const [playerLeader, setPlayerLeader] = useState(false);
   const fullGameTime = gameDurationSeconds + gameDurationMinutes * 60;
@@ -50,6 +50,7 @@ export function EndGameModal({ isWon, gameDurationSeconds, gameDurationMinutes, 
     addLeader({
       name: leader,
       time: fullGameTime,
+      achievements,
     })
       .then(newLeaders => {
         console.log(newLeaders);

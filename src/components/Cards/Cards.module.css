@@ -82,3 +82,114 @@
   padding: 10px;
   line-height: 28px;
 }
+
+.epiphany_buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.epiphany_button,
+.alohomora_button {
+  width: 68px;
+  height: 68px;
+  background-color: #c2f5ff;
+  border-radius: 34px;
+  border: none;
+  position: relative;
+}
+
+.epiphany_button {
+  background-color: transparent;
+}
+
+.epiphany_button_used,
+.alohomora_button_used {
+  width: 68px;
+  height: 68px;
+  background-color: rgba(78, 140, 175, 60%);
+  border-radius: 34px;
+  position: absolute;
+  z-index: 1;
+  margin-left: -6px;
+  margin-top: -71px;
+}
+
+.alohomora_button_used {
+  margin-left: -6px;
+  margin-top: -63px;
+}
+
+.epiphany_button_img {
+  margin-left: -6px;
+  margin-top: -2px;
+  z-index: 1;
+}
+.epiphany_button:hover > .epiphany_button_clue,
+.alohomora_button:hover > .alohomora_button_clue {
+  display: block;
+}
+
+.epiphany_button_clue,
+.alohomora_button_clue {
+  width: 222px;
+  height: 223px;
+  border-radius: 12px;
+  background-color: #c2f5ff;
+  position: absolute;
+  z-index: 2;
+  left: -75px;
+  top: 80px;
+  box-shadow: 0 0 0 1000px #004980c0;
+  display: none;
+}
+
+.epiphany_button_clue_img,
+.alohomora_button_clue_b {
+  position: absolute;
+  top: -81px;
+  left: 75px;
+}
+
+.alohomora_button_clue_b {
+  width: 68px;
+  height: 68px;
+  background-color: #c2f5ff;
+  border-radius: 34px;
+  top: -80px;
+}
+
+.alohomora_button_clue_img {
+  padding-top: 8.5px;
+}
+
+.alohomora_button_clue {
+  height: 150px;
+}
+
+.epiphany_button_clueTitle,
+.alohomora_button_clueTitle {
+  color: #004980;
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 24px;
+  padding-top: 25px;
+  padding-bottom: 10px;
+}
+
+.epiphany_button_clueText,
+.alohomora_button_clueText {
+  color: #004980;
+  text-align: center;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  width: 182px;
+  padding-left: 20px;
+}
+
+.alohomora_button_img {
+  margin-top: 4px;
+}
