@@ -153,7 +153,7 @@ export function Cards({ pairsCount = 3, previewSeconds = 5 }) {
         setTimeout(() => {
           setCards(cards.map(card => (openCardsWithoutPairTemp.includes(card) ? { ...card, open: false } : card)));
           setOpenCardsWithoutPair([]);
-        }, 3000);
+        }, 1000);
       }
 
       return;

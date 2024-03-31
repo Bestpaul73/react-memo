@@ -3,12 +3,12 @@ import styles from "./LeaderboardPage.module.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { getLeaders } from "../../api";
-import pazl from "./images/pazl.svg";
-import pazlSer from "./images/pazlSer.svg";
-import superpowers from "./images/superpowers.svg";
-import superpowersSer from "./images/superpowersSer.svg";
-import hoverSuperpowers from "./images/hoverSuperpowers.svg";
-import hoverPazl from "./images/hoverPazl.svg";
+// import pazl from "./images/pazl.svg";
+// import pazlSer from "./images/pazlSer.svg";
+// import superpowers from "./images/superpowers.svg";
+// import superpowersSer from "./images/superpowersSer.svg";
+// import hoverSuperpowers from "./images/hoverSuperpowers.svg";
+// import hoverPazl from "./images/hoverPazl.svg";
 
 export function LeaderboardPage() {
   const [leaders, setLeaders] = useState(null);
@@ -20,6 +20,7 @@ export function LeaderboardPage() {
         leader = leader.sort(function (a, b) {
           return a.time - b.time;
         });
+        leader = leader.slice(0, 10);
         setLeaders(leader);
       })
       .catch(() => {
@@ -40,7 +41,7 @@ export function LeaderboardPage() {
           <div className={styles.leaderPosition}>Позиция</div>
           <div className={styles.leaderBlock}>
             <div>Пользователь</div>
-            <div>Достижения</div>
+            {/* <div>Достижения</div> */}
             <div>Время</div>
           </div>
         </li>
@@ -52,8 +53,7 @@ export function LeaderboardPage() {
               <div className={styles.leaderPosition}>#{index + 1}</div>
               <div className={styles.leaderBlock}>
                 <div className={styles.leaderBlock_name}>{leader.name}</div>
-                <div className={styles.leaderBlock_achievements}>
-                  {/* {console.log(leader)} */}
+                {/* <div className={styles.leaderBlock_achievements}>
                   {leader.achievements && (
                     <div className={styles.leaderBlock_pazl}>
                       {leader.achievements.includes(1) ? (
@@ -84,7 +84,7 @@ export function LeaderboardPage() {
                       )}
                     </div>
                   )}
-                </div>
+                </div> */}
                 <div>{leader.time}</div>
               </div>
             </li>

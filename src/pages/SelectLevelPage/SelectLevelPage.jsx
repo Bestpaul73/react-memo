@@ -1,16 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../../components/Button/Button";
 import styles from "./SelectLevelPage.module.css";
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { toggleDifficultyModeReducer } from "../../store/gameSlice";
+import { setLevel, toggleDifficultyModeReducer } from "../../store/gameSlice";
 
 export function SelectLevelPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const LEVELS = [1, 2, 3];
-  const [level, setLevel] = useState(1);
-  const { difficultyMode } = useSelector(state => state.game);
+  const { level, difficultyMode } = useSelector(state => state.game);
 
   return (
     <div className={styles.container}>
@@ -20,7 +18,7 @@ export function SelectLevelPage() {
           {LEVELS.map(item => {
             return (
               <li className={`${styles.level} ${LEVELS[item - 1] === level && styles.selected}`} key={item}>
-                <button className={styles.levelLink} onClick={() => setLevel(item)}>
+                <button className={styles.levelLink} onClick={() => dispatch(setLevel(item))}>
                   {item}
                 </button>
               </li>
