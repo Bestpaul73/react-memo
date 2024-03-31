@@ -3,12 +3,12 @@ import styles from "./LeaderboardPage.module.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { getLeaders } from "../../api";
-// import pazl from "./images/pazl.svg";
-// import pazlSer from "./images/pazlSer.svg";
-// import superpowers from "./images/superpowers.svg";
-// import superpowersSer from "./images/superpowersSer.svg";
-// import hoverSuperpowers from "./images/hoverSuperpowers.svg";
-// import hoverPazl from "./images/hoverPazl.svg";
+import pazl from "./images/pazl.svg";
+import pazlInactive from "./images/pazlInactive.svg";
+import superpowers from "./images/superpowers.svg";
+import superpowersInactive from "./images/superpowersInactive.svg";
+import hoverSuperpowers from "./images/hoverSuperpowers.svg";
+import hoverPazl from "./images/hoverPazl.svg";
 
 export function LeaderboardPage() {
   const [leaders, setLeaders] = useState(null);
@@ -28,6 +28,10 @@ export function LeaderboardPage() {
       });
   }, []);
 
+  useEffect(() => {
+    console.log(leaders);
+  }, [leaders]);
+
   return (
     <div className={styles.main}>
       <div className={styles.header}>
@@ -41,7 +45,7 @@ export function LeaderboardPage() {
           <div className={styles.leaderPosition}>Позиция</div>
           <div className={styles.leaderBlock}>
             <div>Пользователь</div>
-            {/* <div>Достижения</div> */}
+            <div>Достижения</div>
             <div>Время</div>
           </div>
         </li>
@@ -53,13 +57,13 @@ export function LeaderboardPage() {
               <div className={styles.leaderPosition}>#{index + 1}</div>
               <div className={styles.leaderBlock}>
                 <div className={styles.leaderBlock_name}>{leader.name}</div>
-                {/* <div className={styles.leaderBlock_achievements}>
+                <div className={styles.leaderBlock_achievements}>
                   {leader.achievements && (
                     <div className={styles.leaderBlock_pazl}>
                       {leader.achievements.includes(1) ? (
                         <img src={pazl} alt="" className={styles.leaderBlock_img} />
                       ) : (
-                        <img src={pazlSer} alt="" className={styles.leaderBlock_img} />
+                        <img src={pazlInactive} alt="" className={styles.leaderBlock_img} />
                       )}
                       {leader.achievements.includes(1) && (
                         <div className={styles.bubble_pazl}>
@@ -74,7 +78,7 @@ export function LeaderboardPage() {
                       {leader.achievements.includes(2) ? (
                         <img src={superpowers} alt="" className={styles.leaderBlock_img} />
                       ) : (
-                        <img src={superpowersSer} alt="" className={styles.leaderBlock_img} />
+                        <img src={superpowersInactive} alt="" className={styles.leaderBlock_img} />
                       )}
                       {leader.achievements.includes(2) && (
                         <div className={styles.bubble_superpowers}>
@@ -84,7 +88,7 @@ export function LeaderboardPage() {
                       )}
                     </div>
                   )}
-                </div> */}
+                </div>
                 <div>{leader.time}</div>
               </div>
             </li>
